@@ -1,4 +1,4 @@
-import time
+'''import time
 
 from mrchunks.group import shuffle
 
@@ -42,4 +42,11 @@ class Processor(Component):
     def run(self, sleep=0.2):
         while True:
             time.sleep(sleep)
-            self.process(self.receive())
+            self.process(self.receive())'''
+
+try:
+    # Use builtin asyncio on Python 3.4+, or Tulip on Python 3.3
+    import asyncio
+except ImportError:
+    # Use Trollius on Python <= 3.2
+    import trollius as asyncio
