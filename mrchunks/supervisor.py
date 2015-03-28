@@ -1,9 +1,9 @@
 import logging
 logging.basicConfig(level=logging.DEBUG)
 import time
-import multiprocessing
 from collections import namedtuple
 
+from mrchunks import spawn
 
 ONE_FOR_ONE = 'one_for_one'
 RESTART_PERMANENT = 'permanent'
@@ -74,30 +74,6 @@ class Supervisor(object):
             process.start()
         else:
             raise NotImplementedError
-
-
-class Spawn(object):
-    # TODO this need to be a singleton
-
-    def __init__(self):
-        self._next_pid = 0
-
-    def _get_next_pid(self):
-        pid = self._next_pid
-        self._next_pid += 1
-        return pid
-
-    def __call__(self, call, *args, **kwargs):
-        # TODO pid + args sucks!
-        pid = self._get_next_pid()
-        args = [pid] + list(args)
-        process = multiprocessing.Process(target=call, args=args,
-                                          kwargs=kwargs,
-                                          name=pid)
-        process.start()
-        return pid, process
-
-spawn = Spawn()
 
 
 if __name__ == '__main__':

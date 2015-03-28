@@ -3,6 +3,9 @@ from mrchunks.supervisor import spawn
 from mrchunks.process import Process
 
 
+# TODO think about how to spawn a function
+
+
 class Ping(Process):
     @asyncio.coroutine
     def initialize(self, pong):
@@ -22,5 +25,6 @@ class Pong(Process):
 
 
 if __name__ == '__main__':
+    # TODO we shoulb probabily decouple the process from the callable
     pong_pid, _ = spawn(Pong())
-    spawn(Ping(), pong_pid)
+    spawn(Ping(), pong_pid)  # TODO make args *args
