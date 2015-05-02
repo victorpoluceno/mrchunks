@@ -4,8 +4,8 @@ from mrchunks.mailbox import Mailbox
 
 class Arbiter:
 
-    def __init__(self):
-        self._engine = Engine()
+    def __init__(self, number_of_workers):
+        self._engine = Engine(number_of_workers)
         self._next_pid = 0
 
     def _get_next_pid(self):
@@ -17,13 +17,14 @@ class Arbiter:
         pid = self._get_next_pid()
         process = Process(pid, start)
         self._engine.apply(process, *args, **kwargs)
+        return pid
 
     def run(self, forever=True):
         self._engine.run(forever)
 
 
-def get_arbiter():
-    return Arbiter()
+def get_arbiter(number_of_workers=1):
+    return Arbiter(number_of_workers)
 
 
 class Process(object):
@@ -43,5 +44,5 @@ class Process(object):
 
     def receive(self):
         print('Receiving...')
-        envelop = self._mailbox.get()
+        envelop = self._mailbox.receive()
         return envelop
