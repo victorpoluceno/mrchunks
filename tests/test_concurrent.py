@@ -1,6 +1,6 @@
 import time
 
-from mrchunks.smp import Engine, switch
+from mrchunks.concurrent import Engine, switch
 
 
 class TestSMP:
