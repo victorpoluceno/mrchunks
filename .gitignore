@@ -1,3 +1,5 @@
 old
 env
 *.pyc
+*.bk
+.vagrant
