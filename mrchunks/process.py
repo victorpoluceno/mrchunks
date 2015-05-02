@@ -1,9 +1,5 @@
 from mrchunks.concurrent import Engine
-# from mrchunks.mailbox import Mailbox
-
-from collections import namedtuple
-
-Envelop = namedtuple('envelop', 'recipient sender message')
+from mrchunks.mailbox import Mailbox
 
 
 class Arbiter:
@@ -37,16 +33,15 @@ class Process(object):
         self._start = start
 
     def __call__(self, *args, **kwargs):
-        # self._mailbox = Mailbox()
-        # self._mailbox.run(self.pid)
+        self._mailbox = Mailbox()
+        self._mailbox.run(self.pid)
         self._start(self, *args, **kwargs)
 
-    """def send(self, to, message):
-        print('Sending message: {} to: {}'.format(message, to))
-        envelop = Envelop(self.pid, to, message)
-        self._mailbox.put(envelop)
+    def send(self, recipient, message):
+        print('Sending message: {} to: {}'.format(message, recipient))
+        self._mailbox.send(recipient, message)
 
     def receive(self):
         print('Receiving...')
         envelop = self._mailbox.get()
-        return envelop  # TODO this should return a namedtuple"""
+        return envelop
