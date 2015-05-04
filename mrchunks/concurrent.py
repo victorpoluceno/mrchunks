@@ -88,8 +88,10 @@ class Scheduler:
 
     def loop(self):
         while True:
+            time.sleep(0.1)
             self.switch()
 
 
 def switch():
-    greenlet.getcurrent().parent.switch()
+    if greenlet.getcurrent().parent:
+        greenlet.getcurrent().parent.switch()
