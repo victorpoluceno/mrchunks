@@ -2,6 +2,7 @@ from collections import namedtuple
 
 import zmq
 
+from mrchunks.concurrent import switch
 from mrchunks.serializer import encode, decode
 
 
@@ -37,13 +38,26 @@ class Incoming(object):
         self._context = zmq.Context()
 
     def get(self):
-        data = self._socket.recv()
+        while True:
+            socks = dict(self._poller.poll(100))
+            if socks:
+                if socks.get(self._socket) != zmq.POLLIN:
+                    switch()
+                    continue
+
+                data = self._socket.recv(zmq.NOBLOCK)
+                break
+            else:
+                switch()
+
         return decode(data)
 
     def listen(self, pid):
         self._socket = self._context.socket(zmq.REP)
         address, port = resolve(pid)
         self._socket.bind("tcp://*:%s" % (port,))
+        self._poller = zmq.Poller()
+        self._poller.register(self._socket, zmq.POLLIN)
 
 
 class Outgoing(object):
@@ -55,4 +69,4 @@ class Outgoing(object):
         address, port = resolve(recipient)
         socket = self._context.socket(zmq.REQ)
         socket.connect("tcp://%s:%s" % (address, port))
-        socket.send(encode(evenlop))
+        socket.send(encode(evenlop), zmq.NOBLOCK)

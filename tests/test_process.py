@@ -24,7 +24,7 @@ class TestProcess:
             print envelop
             process.send(envelop.sender, 'pong')
 
-        arbiter = get_arbiter(number_of_workers=2)
+        arbiter = get_arbiter(number_of_workers=1)
         pong_pid = arbiter.spawn(pong)
         arbiter.spawn(ping, pong_pid)
         arbiter.run(forever=False)
@@ -33,5 +33,5 @@ class TestProcess:
 
 if __name__ == '__main__':
     t = TestProcess()
-    t.test_simple()
+    #t.test_simple()
     t.test_mailbox()
