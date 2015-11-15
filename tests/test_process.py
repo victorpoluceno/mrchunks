@@ -30,8 +30,23 @@ class TestProcess:
         arbiter.run(forever=False)
         time.sleep(10)
 
+    def test_mailbox_dispatcher(self):
+        def ping_dispatcher(process, childs):
+            for pid in childs:
+                process.send(pid, 'ping')
+                print 'Got: ', process.receive()
 
-if __name__ == '__main__':
-    t = TestProcess()
-    #t.test_simple()
-    t.test_mailbox()
+        def pong(process):
+            envelop = process.receive()
+            print envelop
+            process.send(envelop.sender, 'pong')
+
+        arbiter = get_arbiter(number_of_workers=1)
+
+        childs = []
+        for i in range(4):
+            childs.append(arbiter.spawn(pong))
+
+        arbiter.spawn(ping_dispatcher, childs)
+        arbiter.run(forever=False)
+        time.sleep(10)
