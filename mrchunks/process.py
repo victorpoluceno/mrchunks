@@ -39,7 +39,8 @@ class Process(object):
         self._start(self, *args, **kwargs)
 
     def send(self, recipient, message):
-        print('Sending message: {} to: {}'.format(message, recipient))
+        print('Sending message: {} from: {} to: {}'.format(message, self.pid,
+                                                           recipient))
         self._mailbox.send(recipient, message)
 
     def receive(self):
