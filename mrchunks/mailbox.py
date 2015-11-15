@@ -34,6 +34,7 @@ class Mailbox(object):
 
 
 class Incoming(object):
+
     def __init__(self):
         self._context = zmq.Context()
 
@@ -45,7 +46,8 @@ class Incoming(object):
                     switch()
                     continue
 
-                data = self._socket.recv(zmq.NOBLOCK)
+                data = self._socket.recv()
+                self._socket.send(b"OK+")
                 break
             else:
                 switch()
@@ -61,6 +63,7 @@ class Incoming(object):
 
 
 class Outgoing(object):
+
     def __init__(self):
         self._context = zmq.Context()
 
