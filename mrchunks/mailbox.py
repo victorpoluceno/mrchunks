@@ -56,8 +56,8 @@ class Incoming(object):
 
     def listen(self, pid):
         self._socket = self._context.socket(zmq.REP)
-        address, port = resolve(pid)
-        self._socket.bind("tcp://*:%s" % (port,))
+        _, _, p = pid
+        self._socket.bind("ipc:///tmp/%d" % (p,))
         self._poller = zmq.Poller()
         self._poller.register(self._socket, zmq.POLLIN)
 
@@ -69,7 +69,7 @@ class Outgoing(object):
 
     def put(self, evenlop):
         sender, recipient, message = evenlop
-        address, port = resolve(recipient)
+        address, port, _ = recipient
         socket = self._context.socket(zmq.REQ)
         socket.connect("tcp://%s:%s" % (address, port))
         socket.send(encode(evenlop), zmq.NOBLOCK)

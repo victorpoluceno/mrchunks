@@ -42,4 +42,4 @@ if __name__ == '__main__':
 
     print('Initializing dispatcher...')
     node.arbiter.spawn(run_dispatcher, childs)
-    node.arbiter.run()
+    node.arbiter.run()  # TODO would be good to have a run_until_complete here

@@ -1,9 +1,11 @@
 from mrchunks.process import get_arbiter
 
 
+# TODO make this a singleton
+
 class Node:
     arbiter = None
 
-    def initialize(self, number_of_workers):
+    def initialize(self, address, number_of_workers):
         assert not self.arbiter
-        self.arbiter = get_arbiter(number_of_workers)
+        self.arbiter = get_arbiter(address, number_of_workers)
